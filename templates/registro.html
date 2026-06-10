@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>New Era | Registro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red: #5e0d0d;
+      --red-dark: #5e0d0d;
+      --red-light: #d63148;
+      --black: #0a0a0a;
+      --white: #f5f5f5;
+      --gray: #1a1a1a;
+      --gray2: #242424;
+      --input-border: rgba(255,255,255,0.1);
+      --input-focus: var(--red);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Barlow', sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* ─── TOP BAR ─── */
+    .top-bar {
+      background: var(--red);
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      position: relative;
+      z-index: 100;
+      border-bottom: 3px solid var(--red-dark);
+    }
+
+    .logo-img {
+      height: 64px;
+      width: auto;
+      object-fit: contain;
+      position: relative;
+      top: 6px;
+      z-index: 110;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
+    }
+
+    /* Hamburger */
+    .hamburger {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 6px;
+      z-index: 200;
+    }
+    .hamburger span {
+      display: block;
+      width: 26px;
+      height: 2px;
+      background: var(--white);
+      border-radius: 2px;
+      transition: all .35s ease;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* ─── BRIM ─── */
+    .brim {
+      background: var(--red);
+      position: relative;
+      height: 64px;
+      z-index: 90;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      overflow: visible;
+    }
+    .brim::after {
+      content: '';
+      position: absolute;
+      bottom: -28px;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background: var(--red);
+      border-radius: 0 0 50% 50% / 0 0 100% 100%;
+      z-index: -1;
+    }
+    .brim-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      width: 100%;
+      max-width: 1100px;
+      padding: 10px 0 0;
+      position: relative;
+    }
+    .brim-nav a {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.92);
+      text-decoration: none;
+      padding: 6px 22px;
+      position: relative;
+      transition: color .2s;
+    }
+    .brim-nav a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 50%;
+      transform: translateX(-50%) scaleX(0);
+      width: 60%;
+      height: 2px;
+      background: var(--white);
+      border-radius: 1px;
+      transition: transform .25s ease;
+    }
+    .brim-nav a:hover { color: #fff; }
+    .brim-nav a:hover::after { transform: translateX(-50%) scaleX(1); }
+    .brim-nav a.active { color: #fff; }
+    .brim-nav a.active::after { transform: translateX(-50%) scaleX(1); }
+
+    /* ─── MOBILE MENU ─── */
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 50%;
+      height: 100%;
+      background: rgba(10,10,10,0.97);
+      z-index: 300;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      transform: translateX(100%);
+      transition: transform .4s cubic-bezier(.77,0,.18,1);
+      border-left: 2px solid var(--red-dark);
+    }
+    .mobile-menu.open { transform: translateX(0); }
+    .mobile-menu a {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: .08em;
+      color: var(--white);
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .mobile-menu a:hover { color: var(--red); }
+    .mobile-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: var(--white);
+      font-size: 1.6rem;
+      cursor: pointer;
+    }
+
+    /* ─── MAIN CONTENT ─── */
+    .main {
+      margin-top: 48px; /* brim curve offset */
+      min-height: calc(100vh - 180px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 20px;
+    }
+
+    /* ─── REGISTER CARD ─── */
+    .register-card {
+      background: var(--gray2);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 4px;
+      width: 100%;
+      max-width: 480px;
+      padding: 44px 40px 48px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+    }
+
+    /* red accent line top */
+    .register-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--red);
+    }
+
+    .card-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.4rem;
+      letter-spacing: .08em;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+    .card-subtitle {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.82rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 32px;
+    }
+
+    /* ─── FORM ─── */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+    .form-group.full { grid-column: 1 / -1; }
+
+    label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.78rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="tel"] {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--input-border);
+      border-radius: 3px;
+      color: var(--white);
+      font-family: 'Barlow', sans-serif;
+      font-size: 0.95rem;
+      padding: 11px 14px;
+      width: 100%;
+      outline: none;
+      transition: border-color .2s, background .2s;
+    }
+    input::placeholder { color: rgba(255,255,255,0.18); }
+    input:focus {
+      border-color: var(--red);
+      background: rgba(200,16,46,0.04);
+    }
+    input.error-field { border-color: #e55; }
+
+    /* Password strength bar */
+    .strength-bar {
+      height: 3px;
+      border-radius: 2px;
+      background: rgba(255,255,255,0.07);
+      margin-top: 6px;
+      overflow: hidden;
+    }
+    .strength-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 2px;
+      transition: width .3s ease, background .3s ease;
+    }
+    .strength-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: .1em;
+      color: rgba(255,255,255,0.3);
+      margin-top: 4px;
+      height: 14px;
+    }
+
+    /* Checkbox */
+    .checkbox-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin: 4px 0 24px;
+    }
+    .checkbox-group input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      margin-top: 2px;
+      accent-color: var(--red);
+      cursor: pointer;
+    }
+    .checkbox-group span {
+      font-size: 0.83rem;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.5;
+    }
+    .checkbox-group span a {
+      color: var(--red-light);
+      text-decoration: none;
+    }
+    .checkbox-group span a:hover { text-decoration: underline; }
+
+    /* Submit button */
+    .btn-register {
+      width: 100%;
+      background: var(--red);
+      border: none;
+      border-radius: 3px;
+      color: #fff;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.15rem;
+      letter-spacing: .15em;
+      padding: 14px;
+      cursor: pointer;
+      transition: background .2s, transform .15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-register:hover { background: var(--red-dark); }
+    .btn-register:active { transform: scale(0.99); }
+    .btn-register:disabled { background: rgba(200,16,46,0.4); cursor: not-allowed; }
+
+    /* Spinner inside button */
+    .btn-register .spinner {
+      display: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      margin: 0 auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .btn-register.loading .btn-text { display: none; }
+    .btn-register.loading .spinner { display: block; }
+
+    /* Login link */
+    .login-link {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.35);
+    }
+    .login-link a {
+      color: var(--red-light);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .login-link a:hover { text-decoration: underline; }
+
+    /* Error / Success messages */
+    .msg {
+      border-radius: 3px;
+      padding: 12px 16px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.88rem;
+      letter-spacing: .05em;
+      margin-bottom: 20px;
+      display: none;
+    }
+    .msg.error   { background: rgba(220,50,50,0.12); border: 1px solid rgba(220,50,50,0.3); color: #f88; }
+    .msg.success { background: rgba(40,180,100,0.12); border: 1px solid rgba(40,180,100,0.3); color: #6ecf8f; }
+    .msg.show    { display: block; }
+
+    /* Field error hint */
+    .field-error {
+      font-size: 0.75rem;
+      color: #f88;
+      font-family: 'Barlow Condensed', sans-serif;
+      letter-spacing: .05em;
+      min-height: 14px;
+      margin-top: 2px;
+    }
+
+    /* ─── FOOTER ─── */
+    .footer {
+      text-align: center;
+      padding: 28px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.15);
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      .brim-nav { display: none; }
+      .register-card { padding: 32px 24px 36px; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 400px) {
+      .register-card { padding: 28px 18px 32px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Mobile overlay menu -->
+  <nav class="mobile-menu" id="mobileMenu">
+    <button class="mobile-close" id="mobileClose">✕</button>
+    <a href="/">Inicio</a>
+    <a href="#">Acerca de</a>
+    <a href="#">Colecciones</a>
+   <a href="/registro">Registro</a>
+    <a href="/login">Inicio de sesión</a>
+  </nav>
+
+  <!-- ─── TOP BAR ─── -->
+  <header class="top-bar">
+    <img src="/static/newera_Logo.png" alt="New Era Logo" class="logo-img" />
+    <div class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </header>
+
+  <!-- ─── BRIM ─── -->
+  <div class="brim">
+    <nav class="brim-nav">
+   <a href="/">Inicio</a>
+
+<a href="#">Acerca de</a>
+
+<a href="/registro" class="active">Registro</a>
+
+<a href="/login">Inicio de sesión</a>
+    </nav>
+  </div>
+
+  <!-- ─── MAIN ─── -->
+  <main class="main">
+    <div class="register-card">
+
+      <h1 class="card-title">Crear cuenta</h1>
+      <p class="card-subtitle">Únete a la comunidad New Era</p>
+
+      <!-- Mensaje general -->
+      <div class="msg error" id="msgError"></div>
+      <div class="msg success" id="msgSuccess"></div>
+
+      <!-- FORM -->
+      <div class="form-row">
+        <!-- Nombre -->
+        <div class="form-group">
+          <label for="nombre">Nombre</label>
+          <input type="text" id="nombre" placeholder="Juan" autocomplete="given-name" />
+          <div class="field-error" id="err-nombre"></div>
+        </div>
+        <!-- Apellido -->
+        <div class="form-group">
+          <label for="apellido">Apellido</label>
+          <input type="text" id="apellido" placeholder="Pérez" autocomplete="family-name" />
+          <div class="field-error" id="err-apellido"></div>
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="form-group">
+        <label for="email">Correo electrónico</label>
+        <input type="email" id="email" placeholder="juan@ejemplo.com" autocomplete="email" />
+        <div class="field-error" id="err-email"></div>
+      </div>
+
+      <!-- Teléfono -->
+      <div class="form-group">
+        <label for="telefono">Teléfono <span style="color:rgba(255,255,255,0.25)">(opcional)</span></label>
+        <input type="tel" id="telefono" placeholder="+506 8888-0000" autocomplete="tel" />
+      </div>
+
+      <!-- Contraseña -->
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" placeholder="Mínimo 8 caracteres" autocomplete="new-password" />
+        <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+        <div class="strength-label" id="strengthLabel"></div>
+        <div class="field-error" id="err-password"></div>
+      </div>
+
+      <!-- Confirmar contraseña -->
+      <div class="form-group">
+        <label for="password2">Confirmar contraseña</label>
+        <input type="password" id="password2" placeholder="Repite tu contraseña" autocomplete="new-password" />
+        <div class="field-error" id="err-password2"></div>
+      </div>
+
+      <!-- Términos -->
+      <div class="checkbox-group">
+        <input type="checkbox" id="terminos" />
+        <span>Acepto los <a href="#">términos y condiciones</a> y la <a href="#">política de privacidad</a> de New Era.</span>
+      </div>
+
+      <!-- Botón -->
+      <button class="btn-register" id="btnRegister">
+        <span class="btn-text">Crear cuenta</span>
+        <div class="spinner"></div>
+      </button>
+
+      <p class="login-link">¿Ya tienes cuenta? <a href="/login">Inicia sesión</a></p>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    &copy; 2025 New Era Cap Co. · Todos los derechos reservados
+  </footer>
+
+  <script>
+    /* ══════════════════════════════════════════
+       HAMBURGER
+    ══════════════════════════════════════════ */
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileClose = document.getElementById('mobileClose');
+
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('open');
+      mobileMenu.classList.toggle('open');
+    });
+    mobileClose.addEventListener('click', () => {
+      hamburger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+    });
+    mobileMenu.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        hamburger.classList.remove('open');
+        mobileMenu.classList.remove('open');
+      });
+    });
+
+    /* ══════════════════════════════════════════
+       STRENGTH METER
+    ══════════════════════════════════════════ */
+    const passwordInput = document.getElementById('password');
+    const strengthFill  = document.getElementById('strengthFill');
+    const strengthLabel = document.getElementById('strengthLabel');
+
+    passwordInput.addEventListener('input', () => {
+      const val = passwordInput.value;
+      let score = 0;
+      if (val.length >= 8)           score++;
+      if (/[A-Z]/.test(val))         score++;
+      if (/[0-9]/.test(val))         score++;
+      if (/[^A-Za-z0-9]/.test(val))  score++;
+
+      const levels = [
+        { pct: '0%',   color: 'transparent', text: '' },
+        { pct: '25%',  color: '#e55',        text: 'Muy débil' },
+        { pct: '50%',  color: '#e9a23b',     text: 'Débil' },
+        { pct: '75%',  color: '#f0d040',     text: 'Buena' },
+        { pct: '100%', color: '#4caf78',     text: 'Fuerte' },
+      ];
+      const lvl = val.length === 0 ? levels[0] : levels[score] || levels[1];
+      strengthFill.style.width    = lvl.pct;
+      strengthFill.style.background = lvl.color;
+      strengthLabel.textContent   = lvl.text;
+      strengthLabel.style.color   = lvl.color;
+    });
+
+    /* ══════════════════════════════════════════
+       VALIDACIÓN Y ENVÍO
+    ══════════════════════════════════════════ */
+    const btn     = document.getElementById('btnRegister');
+    const msgErr  = document.getElementById('msgError');
+    const msgOk   = document.getElementById('msgSuccess');
+
+    function clearErrors() {
+      document.querySelectorAll('.field-error').forEach(e => e.textContent = '');
+      document.querySelectorAll('input').forEach(i => i.classList.remove('error-field'));
+      msgErr.classList.remove('show');
+      msgOk.classList.remove('show');
+    }
+
+    function fieldError(id, msg) {
+      const el = document.getElementById('err-' + id);
+      if (el) el.textContent = msg;
+      const inp = document.getElementById(id);
+      if (inp) inp.classList.add('error-field');
+    }
+
+    function validate() {
+      let ok = true;
+      const nombre   = document.getElementById('nombre').value.trim();
+      const apellido = document.getElementById('apellido').value.trim();
+      const email    = document.getElementById('email').value.trim();
+      const pass     = document.getElementById('password').value;
+      const pass2    = document.getElementById('password2').value;
+      const terminos = document.getElementById('terminos').checked;
+
+      if (!nombre)  { fieldError('nombre', 'Ingresa tu nombre.'); ok = false; }
+      if (!apellido){ fieldError('apellido', 'Ingresa tu apellido.'); ok = false; }
+
+      if (!email) {
+        fieldError('email', 'Ingresa tu correo.'); ok = false;
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        fieldError('email', 'Correo no válido.'); ok = false;
+      }
+
+      if (!pass || pass.length < 8) {
+        fieldError('password', 'La contraseña debe tener al menos 8 caracteres.'); ok = false;
+      }
+      if (pass !== pass2) {
+        fieldError('password2', 'Las contraseñas no coinciden.'); ok = false;
+      }
+      if (!terminos) {
+        msgErr.textContent = 'Debes aceptar los términos y condiciones.';
+        msgErr.classList.add('show');
+        ok = false;
+      }
+
+      return ok;
+    }
+
+    btn.addEventListener('click', async () => {
+      clearErrors();
+      if (!validate()) return;
+
+      /* ── Datos del formulario ── */
+      const payload = {
+        nombre:    document.getElementById('nombre').value.trim(),
+        apellido:  document.getElementById('apellido').value.trim(),
+        email:     document.getElementById('email').value.trim(),
+        telefono:  document.getElementById('telefono').value.trim(),
+        password:  document.getElementById('password').value,
+      };
+
+      /* ── Mostrar loading ── */
+      btn.classList.add('loading');
+      btn.disabled = true;
+
+      try {
+        /*
+         * ─────────────────────────────────────────────────────────────────
+         *  LLAMADA AL BACKEND
+         *  Cambia la URL por la de tu API, ej: 'https://tudominio.com/api/registro'
+         *  El backend debe aceptar POST con JSON y devolver:
+         *    { ok: true }  → en caso de éxito
+         *    { ok: false, mensaje: "..." }  → en caso de error (ej. email en uso)
+         * ─────────────────────────────────────────────────────────────────
+         */
+        const res  = await fetch('/api/registro', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.ok) {
+          /* Éxito: limpiar form y mostrar mensaje */
+          msgOk.textContent = '¡Cuenta creada exitosamente! Redirigiendo…';
+          msgOk.classList.add('show');
+          document.querySelectorAll('input').forEach(i => i.value = '');
+          strengthFill.style.width = '0%';
+          strengthLabel.textContent = '';
+
+          /* Guardar token si el backend lo devuelve */
+        if (data.token) {
+    localStorage.setItem("ne_token", data.token);
+}
+
+if (data.usuario) {
+    localStorage.setItem(
+        "ne_usuario",
+        JSON.stringify(data.usuario)
+    );
+}
+          /* Redirigir al inicio después de 2s */
+          setTimeout(() => { window.location.href = '/'; }, 2000);
+
+        } else {
+          /* Error del servidor (email duplicado, etc.) */
+          const mensaje = data.mensaje || 'Error al registrar. Intenta de nuevo.';
+          msgErr.textContent = mensaje;
+          msgErr.classList.add('show');
+
+          /* Si el backend indica que el email ya existe */
+          if (data.campo === 'email') fieldError('email', mensaje);
+        }
+
+      } catch (err) {
+        /* Error de red */
+        msgErr.textContent = 'No se pudo conectar con el servidor. Verifica tu conexión.';
+        msgErr.classList.add('show');
+      } finally {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+      }
+    });
+
+    /* Enter en cualquier campo dispara el botón */
+    document.querySelectorAll('input').forEach(inp => {
+      inp.addEventListener('keydown', e => {
+        if (e.key === 'Enter') btn.click();
+      });
+    });
+  </script>
+</body>
+</html>
